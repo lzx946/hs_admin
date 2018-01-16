@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/base.iml" filepath="$PROJECT_DIR$/base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/base-api-service-api/base-api-service-api.iml" filepath="$PROJECT_DIR$/base-api-service-api/base-api-service-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/base-api-service-common/base-api-service-common.iml" filepath="$PROJECT_DIR$/base-api-service-common/base-api-service-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/base-api-service-dao/base-api-service-dao.iml" filepath="$PROJECT_DIR$/base-api-service-dao/base-api-service-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/base-api-service-domain/base-api-service-domain.iml" filepath="$PROJECT_DIR$/base-api-service-domain/base-api-service-domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/base-api-service-rpc/base-api-service-rpc.iml" filepath="$PROJECT_DIR$/base-api-service-rpc/base-api-service-rpc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/base-api-service-services/base-api-service-services.iml" filepath="$PROJECT_DIR$/base-api-service-services/base-api-service-services.iml" />
+      <module fileurl="file://$PROJECT_DIR$/base-api-service-web/base-api-service-web.iml" filepath="$PROJECT_DIR$/base-api-service-web/base-api-service-web.iml" />
+    </modules>
+  </component>
+</project>

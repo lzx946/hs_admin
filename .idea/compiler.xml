@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="base-api-service-api" />
+        <module name="base-api-service-common" />
+        <module name="base-api-service-dao" />
+        <module name="base-api-service-domain" />
+        <module name="base-api-service-rpc" />
+        <module name="base-api-service-services" />
+        <module name="base-api-service-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="base" target="1.8" />
+      <module name="base-api-service-api" target="1.8" />
+      <module name="base-api-service-common" target="1.8" />
+      <module name="base-api-service-dao" target="1.8" />
+      <module name="base-api-service-domain" target="1.8" />
+      <module name="base-api-service-rpc" target="1.8" />
+      <module name="base-api-service-services" target="1.8" />
+      <module name="base-api-service-web" target="1.8" />
+      <module name="service" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
