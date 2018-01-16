@@ -21,7 +21,6 @@ public class TestController {
     @RequestMapping(value = "/")
     public List<TbTest> home() {
         log.info(testServiceImpl.selectAll().get(0).getName());
-        log.info(testServiceImpl.selectAll().get(1).getName());
         return testServiceImpl.selectAll();
     }
 }
