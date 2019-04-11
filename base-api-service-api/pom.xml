@@ -22,6 +22,11 @@
 
 		<dependency>
 			<groupId>top.tsama</groupId>
+			<artifactId>base-api-service-common</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>top.tsama</groupId>
 			<artifactId>base-api-service-domain</artifactId>
 		</dependency>
 

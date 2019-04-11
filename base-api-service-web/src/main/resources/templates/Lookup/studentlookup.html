@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>选择学员</title>
+    <link href="static/themes/css/login.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<form id="pagerForm" method="post" action="student/getstudentslist.do">
+    <input type="hidden" name="pageNum" th:value="${page.pageNum}" />
+    <input type="hidden" name="numPerPage" th:value="${page.pageSize}" />
+    <input type="hidden" name="orderField" th:value="${param.orderField}" />
+    <input type="hidden" name="orderDirection" th:value="${param.orderDirection}" />
+    <input type="hidden" name="username" th:value="${realname}"/>
+</form>
+<div class="pageHeader">
+    <form onsubmit="return dwzSearch(this, 'dialog');" action="student/getstudentslist.do" method="post">
+        <div class="searchBar">
+            <ul class="searchContent">
+                <li>
+                    <span>学员姓名：</span>
+                    <input type="text" name="realname"  th:value="${realname}"/>
+                </li>
+            </ul>
+            <div class="subBar">
+                <ul>
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="submit">查询</button></div></div></li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <table class="list" width="100%" targetType="navTab" asc="asc" desc="desc" layoutH="90" >
+        <thead>
+        <tr>
+            <th width="10%" align="center">学员姓名</th>
+            <th width="10%" align="center">学员账号</th>
+            <th width="15%" align="center">邮箱</th>
+            <th width="20%" align="center">职务</th>
+            <th width="20%" align="center">工作单位</th>
+            <th width="15%" align="center">查找带回</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp,status:${studentslist}" target="new_id" th:attr="rel=${emp.id}" onclick="kkk()">
+            <td th:text="${emp.realname}" th:align="center"></td>
+            <td th:text="${emp.account}" th:align="center"></td>
+            <td th:text="${emp.email}" th:align="center"></td>
+            <td th:text="${emp.position}" th:align="center"></td>
+            <td th:text="${emp.company}" th:align="center"></td>
+            <td>
+                <a class="btnSelect" id="btnSelect" th:href="@{'javascript:$.bringBack({sid:'+${emp.id}+','+'sorgName:'+${emp.realname}+'})'}" title="查找带回">选择</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${page.pageSize==20}" >20</option>
+                <!-- <option value="50" th:selected="${page.pageSize==20}" >50</option>
+                 <option value="100" th:selected="${page.pageSize==20}">100</option>-->
+            </select>
+            <span th:text="'条，共'+${page.total}+'条'"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:attr="totalCount=${page.total}, numPerPage=${page.pageSize}, pageNumShown=10,currentPage=${page.pageNum}"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function dialogAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){
+                navTab.reload("student/getstudentslist.do", {}, "studentsfresh");
+            }
+            $.pdialog.closeCurrent();
+        }
+    }
+</script>
+</body>
+</html>

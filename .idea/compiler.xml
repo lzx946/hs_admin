@@ -24,7 +24,6 @@
       <module name="base-api-service-rpc" target="1.8" />
       <module name="base-api-service-services" target="1.8" />
       <module name="base-api-service-web" target="1.8" />
-      <module name="service" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

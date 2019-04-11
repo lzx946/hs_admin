@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>选择课程</title>
+</head>
+<body>
+<form id="pagerForm" method="post" action="course/getcourseslist.do">
+    <input type="hidden" name="pageNum" th:value="${page.pageNum}" />
+    <input type="hidden" name="numPerPage" th:value="${page.pageSize}" />
+    <input type="hidden" name="orderField" th:value="${param.orderField}" />
+    <input type="hidden" name="orderDirection" th:value="${param.orderDirection}" />
+    <input type="hidden" name="name" th:value="${name}"/>
+</form>
+<div class="pageHeader">
+    <form onsubmit="return dwzSearch(this, 'dialog');" action="course/getcourseslist.do" method="post">
+        <div class="searchBar">
+            <ul class="searchContent">
+                <li>
+                    <span>课程名：</span>
+                    <input type="text" name="name"  th:value="${name}"/>
+                </li>
+            </ul>
+            <div class="subBar">
+                <ul>
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="submit">查询</button></div></div></li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <table class="list" width="100%" targetType="navTab" asc="asc" desc="desc" layoutH="90" >
+        <thead>
+        <tr>
+            <th width="20%" align="center">课程名</th>
+            <th width="20%" align="center">上课地点</th>
+            <th width="10%" align="center">教师账号</th>
+            <th width="10%" align="center">教师姓名</th>
+            <th width="15%" align="center">班次</th>
+            <th width="10%" align="center">期数</th>
+            <th width="15%" align="center">查找带回</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp,status:${courselist}" target="new_id" th:attr="rel=${emp.id}">
+            <td th:text="${emp.name}" th:align="center"></td>
+            <td th:text="${emp.room}" th:align="center"></td>
+            <td th:text="${emp.account}" th:align="center"></td>
+            <td th:text="${emp.realname}" th:align="center"></td>
+            <td th:text="${emp.classroom}" th:align="center"></td>
+            <td th:text="${emp.period}" th:align="center"></td>
+            <td>
+                <a class="btnSelect" id="btnSelect" th:href="@{'javascript:$.bringBack({cid:'+${emp.id}+','+'corgName:'+${emp.name}+'})'}" title="查找带回">选择</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${page.pageSize==20}" >20</option>
+                <!-- <option value="50" th:selected="${page.pageSize==20}" >50</option>
+                 <option value="100" th:selected="${page.pageSize==20}">100</option>-->
+            </select>
+            <span th:text="'条，共'+${page.total}+'条'"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:attr="totalCount=${page.total}, numPerPage=${page.pageSize}, pageNumShown=10,currentPage=${page.pageNum}"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function dialogAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){
+                navTab.reload("course/getcourseslist.do", {}, "coursefresh");
+            }
+            $.pdialog.closeCurrent();
+        }
+    }
+    function navTabAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){ //把指定navTab页面标记为需要“重新载入”。注意navTabId不能是当前navTab页面的
+                navTab.reloadFlag(json.navTabId);
+            } else { //重新载入当前navTab页面
+                navTabPageBreak();
+            }
+            if ("closeCurrent" == json.callbackType) {
+                setTimeout(function(){navTab.closeCurrentTab();}, 100);
+            } else if ("forward" == json.callbackType) {
+                navTab.reload("course/getcourseslist.do");
+            }
+        }
+    }
+    /*  var ids="";
+     function kkk(){
+     var obj=document.getElementsByName('c1');
+     ids="";
+     for(var i=0; i<obj.length; i++){
+     if(obj[i].checked) ids+=obj[i].value+','; //如果选中，将value添加到变量s中
+     }
+     $("#ids").val(ids);
+     var url=$("#updateState").attr("href");
+     var i=url.indexOf(".do");
+     var uRI=url.substring(0,i);
+     uRI=uRI+".do?ids="+ids;
+     $("#updateState").attr("href",uRI);
+     }
+     function kk(){
+     var obj1=document.getElementById('checkboxCtrl');
+     var obj=document.getElementsByName('c1');
+     ids="";
+     if(obj1.checked){
+     for(var i=0; i<obj.length; i++){
+     ids+=obj[i].value+','; //如果选中，将value添加到变量s中
+     }
+     }
+     else
+     {
+     ids="";
+     }
+     $("#ids").val(ids);
+     var url=$("#updateState").attr("href");
+     var i=url.indexOf(".do");
+     var uRI=url.substring(0,i);
+     uRI=uRI+".do?ids="+ids;
+     $("#updateState").attr("href",uRI);
+     }*/
+</script>
+</body>
+</html>

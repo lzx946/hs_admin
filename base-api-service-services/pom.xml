@@ -28,7 +28,17 @@
 
         <dependency>
             <groupId>top.tsama</groupId>
+            <artifactId>base-api-service-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.tsama</groupId>
             <artifactId>base-api-service-rpc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>4.1.6</version>
         </dependency>
 
     </dependencies>

@@ -1,0 +1,137 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>添加课程</title>
+    <script type="text/javascript" src="static/js/jquery-form.js"></script>
+</head>
+<body>
+<!--<div class="pageContent">
+    &lt;!&ndash;<form method='post' enctype="multipart/form-data" id="bigForm">
+        <input type="file" class="bigpagefile" name="uploadFile" onchange="$('#bigForm').submit()"/>
+        <img id="Img" alt="" src="" width="300" height="150" />
+    </form>&ndash;&gt;
+</div>-->
+<div class="pageContent">
+    <form method="post" action="course/insertcourse.do" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+        <div class="pageFormContent" layoutH="65">
+            <p>
+                <label>课程名：</label>
+                <input name="name" class="required" type="text" size="30" />
+            </p>
+            <p>
+                <label>上课地点：</label>
+                <input name="room" id="room" class="required" type="text" size="30" onblur="verifyAccount()">
+            </p>
+            <p>
+                <label>教师账号：</label>
+                <input type="hidden" id="nid" name="orgLookup.id" value="${orgLookup.id}"/>
+                <input type="text" readonly="readonly" class="required" name="orgLookup.orgName" value="" suggestFields="orgNum,orgName" suggestUrl="demo/database/db_lookupSuggest.html" lookupGroup="orgLookup" />
+                <a class="btnLook" target="dialog" href="experts/getexpertslist.do?flag=0" lookupGroup="orgLookup">查找带回</a>
+            </p>
+            <p>
+                <label>期数：</label>
+                <input name="period" id="period" class="digits required" type="text" size="30">
+            </p>
+            <p>
+                <label>班次：</label>
+                <select class="combox" name="classroom">
+                    <option th:each="emp1,status1:${dictionaryinfoList}" th:value="${emp1.id}" th:text="${emp1.codeflagname}"></option>
+                </select>
+            </p>
+            <p>
+                <label>开始时间：</label>
+                <input type="text" name="starttime" class="date required" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"/>
+                <a class="inputDateButton" href="javascript:;">选择</a>
+            </p>
+            <p>
+                <label>结束时间：</label>
+                <input type="text" name="stoptime" class="date required" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"/>
+                <a class="inputDateButton" href="javascript:;">选择</a>
+            </p>
+            <dl class="nowrap">
+                <dt>课程简介：</dt>
+                <dd style="dispaly:inline-block;width:auto"><textarea class="required" cols="120" rows="15" name="summary" type = "text" th:placeholder="请输入课程简介"></textarea></dd>
+            </dl>
+            <!-- <p>
+                <label>公告内容：</label>
+                <input name="noticeContent" class="required" type = "text" size="30" />
+            </p> -->
+            <p>
+                <input type="hidden" id="pic" name="pic" >
+            </p>
+        </div>
+        <div class="formBar">
+            <ul>
+                <!--<li><a class="buttonActive" href="javascript:;"><span>保存</span></a></li>-->
+                <li>
+                    <button type="submit" id="btn" name="btn">保存</button>
+                </li>
+                <li>
+                    <button type="button" class="close">取消</button>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function() {
+        var options = {
+            url : 'upload.do',
+            data:{},
+            dataType : 'json',
+            type : 'post',
+            success : function(data) {
+                if (data.code == 1) {
+                    //book_smallImg = data.fileId;
+                    $("#Img").attr('src', data.url)
+                    $("#pic").val(data.id)
+                } else {
+                    alert("上传失败")
+                }
+            }, //处理完成
+            error : function() {
+                alert("上传错误，请重新操作")
+            }
+        };
+        $('#bigForm').submit(function() { //注意这里的index_form
+            $(this).ajaxSubmit(options);
+            return false;//防止dialog 自动关闭
+        });
+    });
+/*    function verifyAccount() {
+        $("#btn").attr("disabled", false);
+        $.ajax(
+            {
+                type:'POST',
+                url:'experts/verifyAccount.do',
+                data:{account:$("#account").val()},
+                dataType:"json",
+                success:function (data) {
+                    if(data.account!=null){
+                        alert("昵称已存在，请重新输入");
+                        $("#btn").attr("disabled", true);
+                    }
+                }
+            }
+        );
+    }
+    function verifyEmail() {
+        $("#btn").attr("disabled", false);
+        $.ajax(
+            {
+                type:'POST',
+                url:'experts/verifyAccount.do',
+                data:{email:$("#email").val()},
+                dataType:"json",
+                success:function (data) {
+                    if(data.account!=null){
+                        alert("邮箱已存在，请重新输入");
+                        $("#btn").attr("disabled", true);
+                    }
+                }
+            }
+        );
+    }*/
+</script>
+</body>
+</html>

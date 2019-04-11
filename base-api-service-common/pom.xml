@@ -7,20 +7,38 @@
     <artifactId>base-api-service-common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-
     <parent>
         <groupId>top.tsama</groupId>
         <artifactId>base</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
-
-
     <name>base-api-service-common</name>
     <description></description>
+    <dependencies>
+        <!--<dependency>
+            <groupId>top.tsama</groupId>
+            <artifactId>base-api-service-common</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+    </dependencies>
     <build>
-        <!-- 一定要声明如下配置-->
+      <!--  &lt;!&ndash; 一定要声明如下配置&ndash;&gt;
         <resources>
             <resource>
                 <directory>base/base-api-service-web/src/main/resources</directory>
@@ -28,6 +46,12 @@
                     <include>**/*.*</include>
                 </includes>
             </resource>
-        </resources>
+        </resources>-->
+        <plugins>
+            <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>

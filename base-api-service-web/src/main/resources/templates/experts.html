@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="static/themes/css/login.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<form id="pagerForm" method="post" action="experts/getexpertslist.do">
+    <input type="hidden" name="pageNum" th:value="${page.pageNum}" />
+    <input type="hidden" name="numPerPage" th:value="${page.pageSize}" />
+    <input type="hidden" name="orderField" th:value="${param.orderField}" />
+    <input type="hidden" name="orderDirection" th:value="${param.orderDirection}" />
+    <input type="hidden" name="username" th:value="${realname}"/>
+</form>
+<div class="pageHeader">
+    <form onsubmit="return navTabSearch(this);" action="experts/getexpertslist.do" method="post">
+        <div class="searchBar">
+            <ul class="searchContent">
+                <li>
+                    <span>专家姓名：</span>
+                    <input type="text" name="realname"  th:value="${realname}"/>
+                </li>
+                <li>
+                    <input type="submit" value="查询" />
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="add" th:href="@{experts/addexpert.do}" target="dialog"  width="1000" height="450"><span>添加</span></a></li>
+            <li><a class="delete" th:href="@{experts/deleteexpert.do(id='{new_id}')}" target="ajaxTodo" title="确定要删除吗?" rel="" warn="请选择一条记录" callback="dialogAjaxDone"><span>删除</span></a></li>
+             <li><a class="edit" title="修改" target="dialog"  minable=false maxable=false resizable=false mask=true   width="600" height="520" th:href="@{experts/getexpertdetail.do(id='{new_id}',flag=1)}" warn="请选择一条记录"><span>修改</span></a></li>
+             <li><a class="icon" href="experts/export.do" target="ajaxTodo" title="要导出当前记录吗?路径为D:DWZ_expertinfo.xls"><span>导出EXCEL</span></a></li>
+        </ul>
+    </div>
+    <table class="list" width="100%" targetType="navTab" asc="asc" desc="desc" layoutH="90" >
+        <thead>
+        <tr>
+            <th width="5%" align="center">序列号</th>
+            <th width="10%" align="center">专家姓名</th>
+            <th width="10%" align="center">专家账号</th>
+            <th width="12%" align="center">邮箱</th>
+            <th width="10%" align="center">电话号码</th>
+            <th width="10%" align="center">职称</th>
+            <th width="10%" align="center">工作单位</th>
+            <th width="7%" align="center">是否推荐</th>
+            <th width="8%" align="center">状态</th>
+            <th width="5%" align="center">是否可见</th>
+            <th width="13%" align="center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp,status:${expertslist}" target="new_id" th:attr="rel=${emp.id}">
+            <td th:text="${status.index+1}" th:align="center"></td>
+            <td th:text="${emp.realname}" th:align="center"></td>
+            <td th:text="${emp.account}" th:align="center"></td>
+            <td th:text="${emp.email}" th:align="center"></td>
+            <td th:text="${emp.phone}" th:align="center"></td>
+            <td th:text="${emp.academic}" th:align="center"></td>
+            <td th:text="${emp.employer}" th:align="center"></td>
+            <td th:if="${emp.iscommend==0}" th:align="center" th:text="是"></td>
+            <td th:if="${emp.iscommend==1}" th:align="center" th:text="否"></td>
+            <td th:if="${emp.state==1}" th:text="审核通过" th:align="center"></td>
+            <td th:if="${emp.state==0}" th:text="未审核" th:align="center"></td>
+            <td th:if="${emp.state==2}" th:text="审核未通过" th:align="center"></td>
+            <td th:if="${emp.state==3}" th:text="已封禁" th:align="center"></td>
+            <td th:if="${emp.isvisible==1}" th:text="不可见" th:align="center"></td>
+            <td th:if="${emp.isvisible==0}" th:text="可见" th:align="center"></td>
+           <!-- <td th:text="${#dates.format(emp.createtime,'yyyy-MM-dd HH:mm:ss')}" th:align="center">2014-12-01</td>-->
+            <td th:align="center">
+                <a th:if="${emp.iscommend==1}" th:href="@{experts/updateexpert.do(id=${emp.id},iscommend=0)}" th:attr="target=ajaxTodo" title="确定要推荐吗?"  rel="推荐"  title="确定要推荐吗？" callback="dialogAjaxDone">是</a>
+                <a th:if="${emp.iscommend==0}" th:href="@{experts/updateexpert.do(id=${emp.id},iscommend=1)}" th:attr="target=ajaxTodo" title="确定不推荐吗?"  rel="不推荐"  title="确定不推荐吗？" callback="dialogAjaxDone">否</a>
+                <a th:if="${emp.state==1}" th:href="@{experts/updateexpert.do(id=${emp.id},state=3)}" th:attr="target=ajaxTodo" title="确定要封禁吗?"  rel="封禁"  title="确定封禁吗？" callback="dialogAjaxDone">封禁</a>
+                <a th:if="${emp.state==0}" th:href="@{experts/updateexpert.do(id=${emp.id},state=1)}" th:attr="target=ajaxTodo" title="确定审核通过吗?"  rel="审核通过"  title="确定审核通过吗？" callback="dialogAjaxDone">通过</a>
+                <a th:if="${emp.state==0}" th:href="@{experts/updateexpert.do(id=${emp.id},state=2)}" th:attr="target=ajaxTodo" title="确定审核不通过吗?"  rel="审核未通过"  title="确定审核未通过吗？" callback="dialogAjaxDone">未通过</a>
+                <a th:if="${emp.state==2}" th:href="@{experts/updateexpert.do(id=${emp.id},state=1)}" th:attr="target=ajaxTodo" title="确定审核通过吗?"  rel="审核通过"  title="确定审核通过吗？" callback="dialogAjaxDone">通过</a>
+                <a th:if="${emp.state==3}" th:href="@{experts/updateexpert.do(id=${emp.id},state=1)}" th:attr="target=ajaxTodo" title="确定要解禁吗?"  rel="解禁"  title="确定解禁吗？" callback="dialogAjaxDone">解禁</a>
+                <a title="详情" target="dialog"  minable=false maxable=false resizable=false mask=true   width="600" height="520" th:href="@{experts/getexpertdetail.do(id=${emp.id},flag=0)}" value="详情">详情</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${page.pageSize==20}" >20</option>
+                <!-- <option value="50" th:selected="${page.pageSize==20}" >50</option>
+                 <option value="100" th:selected="${page.pageSize==20}">100</option>-->
+            </select>
+            <span th:text="'条，共'+${page.total}+'条'"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:attr="totalCount=${page.total}, numPerPage=${page.pageSize}, pageNumShown=10,currentPage=${page.pageNum}"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function dialogAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){
+                navTab.reload("experts/getexpertslist.do", {}, "expertsfresh");
+            }
+            $.pdialog.closeCurrent();
+        }
+    }
+    $(function(){
+        $.ajaxSettings.global=false;
+    })
+    /* function dialogAjaxDone1(json){
+     DWZ.ajaxDone(json);
+     if (json.statusCode == DWZ.statusCode.ok){
+     if (json.navTabId){
+     navTab.reload("getnewslist.do", {}, "newsfresh");
+     }
+     /!* $.pdialog.closeCurrent(); *!/
+     }
+     }*/
+</script>
+</body>
+</html>

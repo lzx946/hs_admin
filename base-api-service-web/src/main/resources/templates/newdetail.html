@@ -1,0 +1,117 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>新闻</title>
+    <style type="text/css">
+        .pageFormContent p {
+            float: left;
+            display: block;
+            width:auto;
+            height: 21px;
+            margin: 0;
+            padding: 5px 0;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<!--<div class="pageContent">
+    <form method="post" action="updatenew.do" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+        <input type="hidden" th:value="${id}" name="id">
+        <input type="hidden" th:value="-1" name="state">
+        <div class="pageFormContent" layoutH="50" id="userDetail" th:each="emp,status:${newsList}"
+        <p>
+            <label>新闻标题：</label>
+            <input th:if="${flag==0}" style="color:#A9A9A9;" name="title" type="text" size="30" th:value="${emp.title}" readonly="readonly"/>
+            <input name="title"  type="text" size="30" th:value="${emp.title}" th:if="${flag==1}" />
+           &lt;!&ndash; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <img id="smallImg" alt="" th:src="@{${emp.url}}" width="128" height="178" />&ndash;&gt;
+        </p>
+        <p th:if="${flag==0}">
+            <label>状态：</label>
+            <input th:if="${emp.state==0}" style="color:#A9A9A9;" th:value="正常" size="30" type="text" readonly="readonly">
+            <input th:if="${emp.state==1}" style="color:#A9A9A9;" th:value="封禁" size="30" type="text"   readonly="readonly">
+        </p>
+        &lt;!&ndash; <p th:if="${flag==1}">
+             <label>是否可见：</label>
+             <input th:if="${emp.isvisible==1}" th:value="不可见" size="30" type="text" readonly="readonly">
+             <input th:if="${emp.isvisible==0}" th:value="可见" size="30" type="text"   readonly="readonly">
+         </p>&ndash;&gt;
+        <p>
+            <label>创建时间：</label>
+            <input name="time" style="color:#A9A9A9;" type="text" size="30"  readonly="readonly" th:value="${#dates.format(emp.createtime,'yyyy-MM-dd HH:mm:ss')}">
+            <input type="hidden" th:value="${emp.content}" id="contentinput">
+        </p>
+        <dl class="nowrap">
+            <dt>新闻内容：</dt>
+            <dd style="dispaly:inline-block;width:auto">
+                <textarea th:if="${flag==0}" name="content" type="text" cols="100" rows="40"  readonly="readonly"  th:placeholder="${emp.content}"></textarea>
+                <textarea th:if="${flag==1}" name="content" type="text" cols="100" rows="40" id="content" ></textarea>
+            </dd>
+        </dl>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <button th:if="${flag==1}" type="submit" id="btn" name="btn">保存</button>
+                </li>
+                <li>
+                    <div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>-->
+<div style="display:block; overflow:hidden; padding:0 10px; line-height:21px;">
+    <div class="tabs">
+        <!--<div class="tabsHeader">
+            <div class="tabsHeaderContent">
+               <ul>
+                    <li class="selected"><a href="javascript:;"><span>示例</span></a></li>
+                    <li><a href="javascript:;"><span>代码</span></a></li>
+                </ul>
+            </div>
+        </div>-->
+        <div class="tabsContent">
+            <div>
+                <form method="post" action="updatenew.do" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+                    <input type="hidden" th:value="${id}" name="id">
+                    <input type="hidden" th:value="-1" name="state">
+                    <div class="pageFormContent" layoutH="65" id="userDetail">
+                        <div height="200">
+                            <img id="smallImg" alt="" th:src="${url}" width="128" height="178" />
+                        </div>
+                        <p>
+                            <label>新闻标题：</label>
+                            <input th:if="${flag==0}" style="color:#A9A9A9;" name="title" type="text" size="30" th:value="${title}" readonly="readonly"/>
+                            <input name="title"  type="text" size="30" th:value="${title}" th:if="${flag==1}" />
+                            <input type="hidden" th:value="${content}" id="contentinput">
+                    </p>
+                        <dl class="nowrap">
+                            <dt>新闻内容：</dt>
+                            <dd style="dispaly:inline-block;width:auto">
+                            <div class="unit">
+							<textarea class="editor" name="content" rows="27" cols="120"
+                                      upImgUrl="uploadImg.do" upImgExt="jpg,jpeg,gif,png"
+                                      upFlashUrl="uploadImg.do" upFlashExt="swf" id="content"
+                                      ></textarea>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="formBar">
+                        <ul>
+                            <li th:if="${flag==1}"><div class="buttonActive"><div class="buttonContent"><button type="submit">提交</button></div></div></li>
+                            <li><div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div></li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script  type="text/javascript">
+    $("#content").val($("#contentinput").val());
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.tsama.baseapiservicedao.mapper.ExpertsinfoMapper">
+  <resultMap id="BaseResultMap" type="top.tsama.baseapiservicedomain.model.Expertsinfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="photoid" jdbcType="INTEGER" property="photoid" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="academic" jdbcType="VARCHAR" property="academic" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="isvisible" jdbcType="INTEGER" property="isvisible" />
+    <result column="employer" jdbcType="LONGVARCHAR" property="employer" />
+    <result column="summary" jdbcType="LONGVARCHAR" property="summary" />
+    <result column="enname" jdbcType="VARCHAR" property="enname"/>
+    <result column="openemail" jdbcType="VARCHAR" property="openemail"/>
+    <result column="otheracademic" jdbcType="LONGVARCHAR" property="otheracademic"/>
+    <result column="motto" jdbcType="VARCHAR" property="motto" />
+    <result column="iscommend" jdbcType="INTEGER" property="iscommend"></result>
+    <result column="summarys" jdbcType="VARCHAR" property="summarys"></result>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from expertsinfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.tsama.baseapiservicedomain.model.Expertsinfo">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into expertsinfo (id, email, password, 
+      photoid, phone, account, 
+      realname, academic, state, 
+      createtime, isvisible, employer, 
+      summary,enname,openemail,otheracademic,motto,summarys)
+    values (#{id,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{photoid,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, 
+      #{realname,jdbcType=VARCHAR}, #{academic,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{isvisible,jdbcType=INTEGER}, #{employer,jdbcType=LONGVARCHAR}, 
+      #{summary,jdbcType=LONGVARCHAR},#{enname,jdbcType=VARCHAR},#{openemail,jdbcType=VARCHAR},#{otheracademic,jdbcType=VARCHAR},
+      #{motto,jdbcType=VARCHAR},#{summarys,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="top.tsama.baseapiservicedomain.model.Expertsinfo">
+    update expertsinfo
+    <trim prefix="set" suffixOverrides=",">
+      <if test="email!=null">  email= #{email,jdbcType=VARCHAR},</if>
+      <if test="password!=null">password = #{password,jdbcType=VARCHAR},</if>
+      <if test="photoid!=null">  photoid = #{photoid,jdbcType=INTEGER},</if>
+      <if test="phone!=null"> phone = #{phone,jdbcType=VARCHAR},</if>
+      <if test="account!=null"> account = #{account,jdbcType=VARCHAR},</if>
+      <if test="realname!=null"> realname = #{realname,jdbcType=VARCHAR},</if>
+      <if test="academic!=null">academic = #{academic,jdbcType=VARCHAR},</if>
+      <if test="state!=null">state = #{state,jdbcType=INTEGER},</if>
+      <if test="createtime!=null"> createtime = #{createtime,jdbcType=TIMESTAMP},</if>
+      <if test="isvisible!=null">isvisible = #{isvisible,jdbcType=INTEGER},</if>
+      <if test="employer!=null">employer = #{employer,jdbcType=LONGVARCHAR},</if>
+      <if test="summary!=null">summary = #{summary,jdbcType=LONGVARCHAR},</if>
+      <if test="enname!=null">enname = #{enname,jdbcType=VARCHAR},</if>
+      <if test="openemail!=null">openemail = #{openemail,jdbcType=VARCHAR},</if>
+      <if test="otheracademic!=null">otheracademic = #{otheracademic,jdbcType=VARCHAR},</if>
+      <if test="motto!=null">motto = #{motto,jdbcType=VARCHAR},</if>
+      <if test="iscommend!=null">iscommend = #{iscommend,jdbcType=INTEGER},</if>
+      <if test="summarys!=null">summarys= #{summarys,jdbcType=VARCHAR},</if>
+    </trim>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="top.tsama.baseapiservicedomain.model.Expert_Fileinfo" resultType="top.tsama.baseapiservicedomain.model.Expert_Fileinfo">
+    select a.id, email, password, photoid, phone, account, realname, academic, state, createtime,
+    isvisible, employer, summary,b.url,a.enname,a.openemail,a.otheracademic,a.motto,a.iscommend,a.summarys
+    from expertsinfo a left join sys_file b on  a.photoid=b.id
+    where
+     1=1
+     <if test="id!=null">
+       and a.id = #{id,jdbcType=INTEGER}
+     </if>
+     <if test="realname!=null">
+       and  realname LIKE CONCAT('%', #{realname}, '%')
+     </if>
+    <if test="account!=null">
+      and account=#{account,jdbcType=VARCHAR}
+    </if>
+    <if test="email!=null">
+      and email=#{email,jdbcType=VARCHAR}
+    </if>
+    ORDER BY a.createtime DESC
+  </select>
+  <select id="selectAll" resultType="top.tsama.baseapiservicedomain.model.Expert_Fileinfo">
+    select a.id, email, password, photoid, phone, account, realname, academic, state, createtime,
+    isvisible, employer, summary,b.url,a.enname,a.openemail,a.otheracademic,a.motto,a.iscommend,a.summarys
+    from expertsinfo a left join sys_file b ON a.photoid=b.id
+    where 1=1
+    ORDER BY a.createtime DESC
+    <!--<if test="photoid!=null">
+      and a.photoid=b.id
+    </if>-->
+  </select>
+</mapper>

@@ -1,0 +1,153 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>课程详情</title>
+    <style type="text/css">
+        .pageFormContent p {
+            float: left;
+            display: block;
+            width:100%;
+            height: 21px;
+            margin: 0;
+            padding: 5px 0;
+            position: relative;
+        }
+    </style>
+    <style>
+        #userDetail input{
+            /*color:#A9A9A9;*/
+        }
+    </style>
+</head>
+<body>
+<div class="pageContent">
+    <form method="post" action="course/updatecourse.do" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+        <input type="hidden" th:value="${id}" name="id">
+        <div class="pageFormContent" layoutH="50" id="userDetail"
+             th:each="emp,status:${courseVoinfoList}"
+        <p>
+            <label>课程名：</label>
+            <input style="color:#A9A9A9;" th:if="${flag==0}" name="name" type="text" size="30" th:value="${emp.name}" readonly="readonly"/>
+            <input name="name" type="text" class="required" size="30" th:value="${emp.name}" th:if="${flag==1}" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <img id="smallImg" alt="" th:src="@{${emp.url}}" width="128" height="178" />
+        </p>
+        <p>
+            <label>专家账号：</label>
+            <input style="color:#A9A9A9;" name="account" type="text" size="30"  readonly="readonly" th:value="${emp.account}" />
+        </p>
+        <p>
+            <label>专家姓名：</label>
+            <input  style="color:#A9A9A9;" name="realname" type="text" size="30"  readonly="readonly" th:value="${emp.realname}" />
+        </p>
+        <p th:if="${flag==0}">
+            <label>班次：</label>
+            <input style="color:#A9A9A9;" name="codeflagname" type="text" class="text" size="30"  readonly="readonly"  th:value="${emp.codeflagname}" />
+            <!-- <input th:if="${flag==1}" name="codeflagname" class="required" type="text" size="30"  th:value="${emp.codeflagname}" />-->
+        </p>
+        <p th:if="${flag==1}">
+            <label>班次：</label>
+            <select class="combox" name="area">
+                <option th:each="emp1,status1:${dictionaryinfoList}" th:value="${emp1.id}" th:selected="(${emp1.id==emp.classroomint})" th:text="${emp1.codeflagname}"></option>
+            </select>
+        </p>
+        <p>
+            <label>上课地点：</label>
+            <input style="color:#A9A9A9;" name="room" type="text" class="text" size="30"  readonly="readonly" th:if="${flag==0}" th:value="${emp.room}" />
+            <input th:if="${flag==1}" name="room" class="required" type="text" size="30"  th:value="${emp.room}" />
+        </p>
+        <p>
+            <label>容量：</label>
+            <input style="color:#A9A9A9;" th:if="${flag==0}" class="digital" name="content" type="text" size="30"  readonly="readonly" th:value="${emp.content}" />
+            <input th:if="${flag==1}" class="digital" name="content" type="text" size="30"  th:value="${emp.content}" />
+        </p>
+        <!--<p>
+            <label>状态：</label>
+            <input style="color:#A9A9A9;" th:if="${emp.state==0}" name="state" type="text" size="30"  readonly="readonly" th:value="正常" />
+            <input style="color:#A9A9A9;" th:if="${emp.state==1}" name="state" type="text" size="30" readonly="readonly"  th:value="封禁" />
+        </p>-->
+        <p>
+            <label>期数：</label>
+            <input style="color:#A9A9A9;" th:if="${flag==0}" name="period" type="text" size="30"  readonly="readonly" th:value="${emp.period}" />
+            <input th:if="${flag==1}" name="period"  type="text" class="digits" size="30"  th:value="${emp.period}" />
+        </p>
+        <p th:if="${flag==0}">
+            <label>开始时间：</label>
+            <input style="color:#A9A9A9;" name="starttime" type="text" size="30"  readonly="readonly" th:value="${#dates.format(emp.starttime,'yyyy-MM-dd HH:mm:ss')}">
+        </p>
+        <p th:if="${flag==1}">
+            <label>开始时间：</label>
+            <input name="starttime" class="date required" size="30"  th:value="${#dates.format(emp.starttime,'yyyy-MM-dd HH:mm:ss')}" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true">
+            <a class="inputDateButton" href="javascript:;">选择</a>
+        </p>
+        <p th:if="${flag==0}">
+            <label>结束时间：</label>
+            <input style="color:#A9A9A9;" name="stoptime" type="text" size="30"  readonly="readonly" th:value="${#dates.format(emp.stoptime,'yyyy-MM-dd HH:mm:ss')}">
+        </p>
+        <p th:if="${flag==1}">
+            <label>结束时间：</label>
+            <input name="stoptime" class="date required"  readonly="true" size="30"  th:value="${#dates.format(emp.stoptime,'yyyy-MM-dd HH:mm:ss')}" dateFmt="yyyy-MM-dd HH:mm:ss">
+            <a class="inputDateButton" href="javascript:;">选择</a>
+        </p>
+        <!-- <p th:if="${flag==1}">
+             <label>是否可见：</label>
+             <input th:if="${emp.isvisible==1}" th:value="不可见" size="30" type="text" readonly="readonly">
+             <input th:if="${emp.isvisible==0}" th:value="可见" size="30" type="text"   readonly="readonly">
+         </p>-->
+        <p>
+            <label>创建时间：</label>
+            <input style="color:#A9A9A9;" name="time" type="text" size="30"  readonly="readonly" th:value="${#dates.format(emp.createtime,'yyyy-MM-dd HH:mm:ss')}">
+            <input type="hidden" th:value="${emp.summary}" id="summaryinput">
+        </p>
+        <dl class="nowrap">
+            <dt>课程简介：</dt>
+            <dd style="dispaly:inline-block;width:auto">
+                <textarea th:if="${flag==0}" name="summary" type="text" cols="65" rows="10"  readonly="readonly"  th:placeholder="${emp.summary}"></textarea>
+                <textarea th:if="${flag==1}" class="required" name="summary" type="text" cols="65" rows="10" id="summary" ></textarea>
+            </dd>
+        </dl>
+        >
+        <!--        <items="${list}" var="emp" varStatus="status">
+                    <p>
+                        <label>登陆名：</label>
+                        <input name="code" class="digits" type="text" size="30" value="${emp.loginName}" readonly="readonly"/>
+                    </p>
+                    <p>
+                        <label>昵称：</label>
+                        <input name="noticeTitle" type="text" size="30"  readonly="readonly" value="${emp.userName}" />
+                    </p>
+                    <p>
+                        <label>电话号码：</label>
+                        <input name="noticeTitle" type="text" size="30"  readonly="readonly" value="${emp.phone}" />
+                    </p>
+                    <p>
+                        <label>email：</label>
+                        <input name="noticeTitle" type="text" size="30"  readonly="readonly" value="${emp.email}" />
+                    </p>
+                </>
+                <p >
+                    <label>角色名称：</label>
+                    <c:if test="${roleName!=null && roleName!=''}">
+                        <input name="noticeTitle" type="text" size="45"  readonly="readonly" value="${roleName}" />
+                    </c:if>
+                    <c:if test="${roleName==null || roleName==''}">
+                        <input name="noticeTitle" type="text" size="30"  readonly="readonly" value="无角色" />
+                    </c:if>
+                </p>-->
+        <div class="formBar">
+            <ul>
+                <li>
+                    <button th:if="${flag==1}" type="submit" id="btn" name="btn">保存</button>
+                </li>
+                <li>
+                    <div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<script  type="text/javascript">
+    $("#summary").val($("#summaryinput").val());
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="static/themes/css/login.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .searchBar ul.searchContent li {
+            float: left;
+            display: block;
+            overflow: hidden;
+            width: 250px;
+            height: 21px;
+            padding: 2px 0;
+        }
+    </style>
+</head>
+<body>
+<form id="pagerForm" method="post" action="comment/getcommentslist.do">
+    <input type="hidden" name="pageNum" th:value="${page.pageNum}" />
+    <input type="hidden" name="numPerPage" th:value="${page.pageSize}" />
+    <input type="hidden" name="orderField" th:value="${param.orderField}" />
+    <input type="hidden" name="orderDirection" th:value="${param.orderDirection}" />
+    <input type="hidden" name="realname" th:value="${realname}"/>
+    <input type="hidden" name="account" th:value="${account}"/>
+    <input type="hidden" name="coursename" th:value="${coursename}"/>
+</form>
+<div class="pageHeader">
+    <form onsubmit="return navTabSearch(this);" action="comment/getcommentslist.do" method="post">
+        <div class="searchBar">
+            <ul class="searchContent">
+                <li>
+                    <span>学员姓名：</span>
+                    <input type="text" name="realname"  th:value="${realname}"/>
+                </li>
+                <li>
+                    <span>学员账号：</span>
+                    <input type="text" name="account"  th:value="${account}"/>
+                </li>
+                <li>
+                    <span>课程名：</span>
+                    <input type="text" name="coursename"  th:value="${coursename}"/>
+                </li>
+                <li>
+                    <input type="submit" value="查询" />
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="delete" th:href="@{comment/deletecomment.do(id='{new_id}')}" target="ajaxTodo" title="确定要删除吗?" rel="删除评论" warn="请选择一条记录" callback="dialogAjaxDone"><span>删除</span></a></li>
+            <!--<li><a class="edit" th:href="@{student/getstudentdetail.do(id='{new_id}',flag=1)}" title="修改" target="dialog"  minable=false maxable=false resizable=false mask=true   width="600" height="520"><span>修改</span></a></li>
+            <li><a class="icon" href="student/export.do" target="ajaxTodo" title="要导出当前记录吗?路径为D:DWZ_studentinfo.xls"><span>导出EXCEL</span></a></li>-->
+        </ul>
+    </div>
+    <table class="list" width="100%" targetType="navTab" asc="asc" desc="desc" layoutH="90" >
+        <thead>
+        <tr>
+            <!--<th width="5%" align="center">
+                <label style="float:center"><input type="checkbox" id="checkboxCtrl" class="checkboxCtrl" group="c1" title="全选" onclick="kk()"/></label>
+            </th>-->
+            <th width="5%" align="center">序列号</th>
+            <th width="10%" align="center">学员姓名</th>
+            <th width="10%" align="center">学员账号</th>
+            <th width="13%" align="center">课程名</th>
+            <th width="10%" align="center">班次</th>
+            <th width="20%" align="center">评论内容</th>
+            <th width="10%" align="center">状态</th>
+            <th width="7%" align="center">是否推荐</th>
+            <th width="15%" align="center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp,status:${commentVoinfoList}" target="new_id" th:attr="rel=${emp.id}">
+            <!--<td th:align="center">
+                <input type="checkbox" name="c1"  th:value="${emp.id}" />
+            </td>-->
+            <td th:text="${status.index+1}" th:align="center"></td>
+            <td th:text="${emp.realname}" th:align="center"></td>
+            <td th:text="${emp.account}" th:align="center"></td>
+            <td th:text="${emp.coursename}" th:align="center"></td>
+            <td th:text="${emp.codeflagname}" th:align="center"></td>
+            <td th:text="${emp.contentStr}" th:align="center"></td>
+            <td th:if="${emp.state==1}" th:text="封禁" th:align="center"></td>
+            <td th:if="${emp.state==0}" th:text="正常" th:align="center"></td>
+            <td th:if="${emp.iscommend==1}" th:text="否" th:align="center"></td>
+            <td th:if="${emp.iscommend==0}" th:text="是" th:align="center"></td>
+            <!-- <td th:text="${#dates.format(emp.createtime,'yyyy-MM-dd HH:mm:ss')}" th:align="center">2014-12-01</td>-->
+            <td th:align="center">
+                <a th:if="${emp.iscommend==0}" th:href="@{comment/updatecomment.do(id=${emp.id},iscommend=1)}" th:attr="target=ajaxTodo" title="确定不推荐吗?"  rel="不推荐"  title="确定不推荐吗？" callback="dialogAjaxDone">否</a>
+                <a th:if="${emp.iscommend==1}" th:href="@{comment/updatecomment.do(id=${emp.id},iscommend=0)}" th:attr="target=ajaxTodo" title="确定推荐吗?"  rel="推荐"  title="确定推荐吗？" callback="dialogAjaxDone">是</a>
+                <a th:if="${emp.state==0}" th:href="@{comment/updatecomment.do(id=${emp.id},state=1)}" th:attr="target=ajaxTodo" title="确定要封禁吗?"  rel="封禁"  title="确定封禁吗？" callback="dialogAjaxDone">封禁</a>
+                <a th:if="${emp.state==1}" th:href="@{comment/updatecomment.do(id=${emp.id},state=0)}" th:attr="target=ajaxTodo" title="确定要解禁吗?"  rel="解禁"  title="确定解禁吗？" callback="dialogAjaxDone">解禁</a>
+                <a title="详情" target="dialog"  minable=false maxable=false resizable=false mask=true   width="600" height="520" th:href="@{comment/getcommentdetail.do(id=${emp.id})}" value="详情">详情</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${page.pageSize==20}" >20</option>
+                <!-- <option value="50" th:selected="${page.pageSize==20}" >50</option>
+                 <option value="100" th:selected="${page.pageSize==20}">100</option>-->
+            </select>
+            <span th:text="'条，共'+${page.total}+'条'"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:attr="totalCount=${page.total}, numPerPage=${page.pageSize}, pageNumShown=10,currentPage=${page.pageNum}"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function dialogAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){
+                navTab.reload("comment/getcommentslist.do", {}, "commentsfresh");
+            }
+            $.pdialog.closeCurrent();
+        }
+    }
+   /* var ids="";
+    function kkk(){
+        var obj=document.getElementsByName('c1');
+        ids="";
+        for(var i=0; i<obj.length; i++){
+            if(obj[i].checked) ids+=obj[i].value+','; //如果选中，将value添加到变量s中
+        }
+        $("#ids").val(ids);
+        var url=$("#updateState").attr("href");
+        var i=url.indexOf(".do");
+        var uRI=url.substring(0,i);
+        uRI=uRI+".do?ids="+ids;
+        $("#updateState").attr("href",uRI);
+    }
+    function kk(){
+        var obj1=document.getElementById('checkboxCtrl');
+        var obj=document.getElementsByName('c1');
+        ids="";
+        if(obj1.checked){
+            for(var i=0; i<obj.length; i++){
+                ids+=obj[i].value+','; //如果选中，将value添加到变量s中
+            }
+        }
+        else
+        {
+            ids="";
+        }
+        $("#ids").val(ids);
+        var url=$("#updateState").attr("href");
+        var i=url.indexOf(".do");
+        var uRI=url.substring(0,i);
+        uRI=uRI+".do?ids="+ids;
+        $("#updateState").attr("href",uRI);
+    }*/
+</script>
+</body>
+</html>

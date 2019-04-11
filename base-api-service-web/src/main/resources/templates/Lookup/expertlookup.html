@@ -1,0 +1,72 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<form id="pagerForm" action="experts/getexpertslist.do">
+    <input type="hidden" name="pageNum" th:value="${page.pageNum}" />
+    <input type="hidden" name="numPerPage" th:value="${page.pageSize}" />
+    <input type="hidden" name="orderField" th:value="${param.orderField}" />
+    <input type="hidden" name="orderDirection" th:value="${param.orderDirection}" />
+    <input type="hidden" name="realname" th:value="${realname}">
+    <input type="hidden" name="flag" value="0">
+</form>
+
+<div class="pageHeader">
+    <form rel="pagerForm" method="post" action="experts/getexpertslist.do" onsubmit="return dwzSearch(this, 'dialog');">
+        <input type="hidden" name="flag" value="0">
+        <div class="searchBar">
+            <ul class="searchContent">
+                <li>
+                    <label>专家姓名:</label>
+                    <input class="textInput" name="realname" th:value="${realname}" type="text">
+                </li>
+            </ul>
+            <div class="subBar">
+                <ul>
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="submit">查询</button></div></div></li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <table class="table" layoutH="118" targetType="dialog" width="100%">
+        <thead>
+        <tr>
+            <th orderfield="account" align="center">专家账号</th>
+            <th orderfield="email" align="center">专家邮箱</th>
+            <th orderfield="realname" align="center">专家姓名</th>
+            <th orderfield="academic" align="center">专家职称</th>
+            <th width="80" align="center">查找带回</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp,status:${expertslist}" target="new_id" th:attr="rel=${emp.id}">
+            <td th:text="${emp.account}" th:align="center"></td>
+            <td th:text="${emp.email}" th:align="center"></td>
+            <td th:text="${emp.realname}" th:align="center"></td>
+            <td th:text="${emp.academic}" th:align="center"></td>
+            <td>
+                <a class="btnSelect" id="btnSelect" th:href="@{'javascript:$.bringBack({id:'+${emp.id}+','+'orgName:'+${emp.account}+'})'}" title="查找带回">选择</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${page.pageSize==20}" >20</option>
+                <!-- <option value="50" th:selected="${page.pageSize==20}" >50</option>
+                 <option value="100" th:selected="${page.pageSize==20}">100</option>-->
+            </select>
+            <span th:text="'条，共'+${page.total}+'条'"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:attr="totalCount=${page.total}, numPerPage=${page.pageSize}, pageNumShown=10,currentPage=${page.pageNum}"></div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+</script>
+</html>

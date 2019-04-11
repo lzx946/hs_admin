@@ -1,0 +1,94 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>添加新闻</title>
+    <script type="text/javascript" src="static/js/jquery-form.js"></script>
+</head>
+<body>
+<div style="display:block; overflow:hidden; padding:0 10px; line-height:21px;">
+    <div class="tabs">
+        <!--<div class="tabsHeader">
+            <div class="tabsHeaderContent">
+               <ul>
+                    <li class="selected"><a href="javascript:;"><span>示例</span></a></li>
+                    <li><a href="javascript:;"><span>代码</span></a></li>
+                </ul>
+            </div>
+        </div>-->
+        <div class="tabsContent" layoutH="46">
+         <!--   <div>
+                <form method='post' enctype="multipart/form-data" id="bigForm">
+                    <div class="upload-wrap">
+                        <div class="thumbnail"></div>
+                        <input type="file" class="bigpagefile" name="uploadFile" onchange="$('#bigForm').submit()">
+                    </div>
+                </form>
+            </div>-->
+            <div>
+                <form method='post' enctype="multipart/form-data" id="bigForm">
+                    <div class="upload-wrap">
+                        <div class="thumbnail"></div>
+                        <input type="file" class="bigpagefile" name="uploadFile" onchange="$('#bigForm').submit()">
+                    </div>
+                </form>
+                <form method="post" action="addnewsdetail.do" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+                    <p>
+                        <input type="hidden" id="pic" name="pic" >
+                    </p>
+                    <div class="pageFormContent">
+                        <p>
+                            <label>新闻标题：</label>
+                            <input type="text" id="cid" name="title" class="required" size="30"/>
+                        </p>
+                        <dl class="nowrap">
+                            <dt>新闻内容：</dt>
+                            <dd style="dispaly:inline-block;width:auto">
+                                <div class="unit">
+							<textarea class="editor" name="content" rows="20" cols="120"
+                                      upImgUrl="uploadImg.do" upImgExt="jpg,jpeg,gif,png"
+                                      upMediaUrl="uploadImg.do" upMediaExt="ogg,mp4,avi"
+                            >
+                            </textarea>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="formBar">
+                        <ul>
+                            <li><div class="buttonActive"><div class="buttonContent"><button type="submit">提交</button></div></div></li>
+                            <li><div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div></li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        var options = {
+            url : 'upload.do',
+            data:{},
+            dataType : 'json',
+            type : 'post',
+            success : function(data) {
+                if (data.code == 1) {
+                    //book_smallImg = data.fileId;
+                    //$("#Img").attr('src', data.url)
+                    $("#pic").val(data.id)
+                } else {
+                    alert("上传失败")
+                }
+            }, //处理完成
+            error : function() {
+                alert("上传错误，请重新操作")
+            }
+        };
+        $('#bigForm').submit(function() { //注意这里的index_form
+            $(this).ajaxSubmit(options);
+            return false;//防止dialog 自动关闭
+        });
+    });
+</script>
+</body>
+</html>

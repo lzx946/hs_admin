@@ -15,6 +15,7 @@
         <!--set auto generator's datasource-->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="${spring.datasource.url}"
                         userId="${spring.datasource.username}" password="${spring.datasource.password}">
+
         </jdbcConnection>
         <!-- set model package path -->
         <javaModelGenerator targetPackage="top.tsama.baseapiservicedomain.model" targetProject="${generator.mybatis.location.root.path}\base\base-api-service-domain\src\main\java">
@@ -23,7 +24,7 @@
         <sqlMapGenerator targetPackage="top.tsama.baseapiservicedao.mapper" targetProject="${generator.mybatis.location.root.path}\base\base-api-service-dao\src\main\java"/>
         <javaClientGenerator type="XMLMAPPER" targetPackage="top.tsama.baseapiservicedao.mapper" targetProject="${generator.mybatis.location.root.path}\base\base-api-service-dao\src\main\java"/>
         <!--set auto generator's tables-->
-        <table tableName="%">
+        <table tableName="sys_dictionary" domainObjectName="Dictionaryinfo">
             <generatedKey column="id" sqlStatement="MySql"/>
         </table>
     </context>

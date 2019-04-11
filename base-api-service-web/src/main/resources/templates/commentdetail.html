@@ -1,0 +1,72 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>评论</title>
+    <style type="text/css">
+        .pageFormContent p {
+            float: left;
+            display: block;
+            width:auto;
+            height: 21px;
+            margin: 0;
+            padding: 5px 0;
+            position: relative;
+        }
+    </style>
+    <style>
+        #userDetail input{
+            color:#A9A9A9;
+        }
+    </style>
+</head>
+<body>
+<div class="pageContent">
+        <div class="pageFormContent" layoutH="50" id="userDetail" th:each="emp,status:${commentVoinfoList}"
+        <p>
+            <label>课程名：</label>
+            <input  name="title" type="text" size="30" th:value="${emp.coursename}" readonly="readonly"/>
+            <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <img id="smallImg" alt="" th:src="@{${emp.url}}" width="128" height="178" />-->
+        </p>
+        <p>
+            <label>班次：</label>
+            <input  name="codeflagname" type="text" size="30" th:value="${emp.codeflagname}" readonly="readonly"/>
+        </p>
+        <p>
+            <label>上课地点：</label>
+            <input  name="room" type="text" size="30" th:value="${emp.room}" readonly="readonly"/>
+        </p>
+        <p>
+            <label>评论人账号：</label>
+            <input  name="account" type="text" size="30" th:value="${emp.account}" readonly="readonly"/>
+        </p>
+        <p>
+            <label>评论人姓名：</label>
+            <input  name="realname" type="text" size="30" th:value="${emp.realname}" readonly="readonly"/>
+        </p>
+        <p>
+            <label>状态：</label>
+            <input th:if="${emp.state==0}" th:value="正常" size="30" type="text" readonly="readonly">
+            <input th:if="${emp.state==1}" th:value="封禁" size="30" type="text"   readonly="readonly">
+        </p>
+        <p>
+            <label>创建时间：</label>
+            <input name="time" type="text" size="30"  readonly="readonly" th:value="${#dates.format(emp.createtime,'yyyy-MM-dd HH:mm:ss')}">
+        </p>
+        <dl class="nowrap">
+            <dt>评论内容：</dt>
+            <dd style="dispaly:inline-block;width:auto">
+                <textarea  name="content" type="text" cols="65" rows="20"  readonly="readonly"  th:placeholder="${emp.content}"></textarea>
+            </dd>
+        </dl>
+</div>
+<div class="formBar">
+    <ul>
+        <li>
+            <div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div>
+        </li>
+    </ul>
+</div>
+</div>
+</body>
+</html>

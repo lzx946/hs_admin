@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class MybatisGenerator {
     public static void main(String[] args) throws Exception{
-        List<String> warnings = new ArrayList<>();
+        List<String> warnings = new ArrayList<String>();
         boolean overwrite = true;
         InputStream is = MybatisGenerator.class.getResourceAsStream("/generator/mybatisGeneratorConfig.xml");
         ConfigurationParser cp = new ConfigurationParser(warnings);

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="static/themes/css/login.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<form id="pagerForm" method="post" action="course/getcourseslist.do">
+    <input type="hidden" name="pageNum" th:value="${page.pageNum}" />
+    <input type="hidden" name="numPerPage" th:value="${page.pageSize}" />
+    <input type="hidden" name="orderField" th:value="${param.orderField}" />
+    <input type="hidden" name="orderDirection" th:value="${param.orderDirection}" />
+    <input type="hidden" name="name" th:value="${name}"/>
+</form>
+<div class="pageHeader">
+    <form onsubmit="return navTabSearch(this);" action="course/getcourseslist.do" method="post">
+        <div class="searchBar">
+            <ul class="searchContent">
+                <li>
+                    <span>课程名：</span>
+                    <input type="text" name="name"  th:value="${name}"/>
+                </li>
+                <li>
+                    <input type="submit" value="查询" />
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="add" href="course/addcourseshow.do" target="navTab"  width="1000" height="450"><span>添加</span></a></li>
+            <li><a class="delete" th:href="@{course/deletecourse.do(id='{new_id}')}" target="ajaxTodo" title="确定要删除课程吗?" rel="删除课程" warn="请选择一条记录" callback="dialogAjaxDone"><span>删除</span></a></li>
+            <li><a class="edit" th:href="@{course/getcoursedetail.do(id='{new_id}',flag=1)}" title="修改" target="dialog"  minable=false maxable=false resizable=false mask=true   width="600" height="520"><span>修改</span></a></li>
+           <!-- <li><a class="icon" href="course/export.do" target="ajaxTodo" title="要导出当前记录吗?路径为D:DWZ_studentinfo.xls"><span>导出EXCEL</span></a></li>-->
+            <!--<input type="hidden" name="result"  id="ids" value=""/>-->
+        </ul>
+    </div>
+    <table class="list" width="100%" targetType="navTab" asc="asc" desc="desc" layoutH="90" >
+        <thead>
+        <tr>
+            <!--<th width="5%" align="center">
+                <label style="float:center"><input type="checkbox" id="checkboxCtrl" class="checkboxCtrl" group="c1" title="全选" onclick="kk()"/></label>
+            </th>-->
+            <th width="5%" align="center">序列号</th>
+            <th width="10%" align="center">课程名</th>
+            <th width="13%" align="center">上课地点</th>
+            <th width="10%" align="center">教师姓名</th>
+            <th width="15%" align="center">课程内容</th>
+            <th width="10%" align="center">开始时间</th>
+            <th width="10%" align="center">结束时间</th>
+            <th width="7%" align="center">是否推荐</th>
+            <th width="8%" align="center">状态</th>
+            <th width="12%" align="center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp,status:${courselist}" target="new_id" th:attr="rel=${emp.id}">
+            <!--<td th:align="center">
+                <input type="checkbox" name="c1"  th:value="${emp.id}" />
+            </td>-->
+            <td th:text="${status.index+1}" th:align="center"></td>
+            <td th:text="${emp.name}" th:align="center"></td>
+            <td th:text="${emp.room}" th:align="center"></td>
+            <td th:text="${emp.realname}" th:align="center"></td>
+            <td th:text="${emp.contentStr}" th:align="center"></td>
+            <td th:text="${#dates.format(emp.starttime,'yyyy-MM-dd')}" th:align="center"></td>
+            <td th:text="${#dates.format(emp.stoptime,'yyyy-MM-dd')}" th:align="center"></td>
+            <td th:if="${emp.iscommend==0}" th:text="是" th:align="center"></td>
+            <td th:if="${emp.iscommend==1}" th:text="否" th:align="center"></td>
+            <td th:if="${emp.state==1}" th:text="审核通过" th:align="center"></td>
+            <td th:if="${emp.state==0}" th:text="未审核" th:align="center"></td>
+            <td th:if="${emp.state==2}" th:text="审核未通过" th:align="center"></td>
+            <td th:if="${emp.state==3}" th:text="已封禁" th:align="center"></td>
+            <td th:if="${emp.state==null}" th:text="无" th:align="center"></td>
+            <!-- <td th:text="${#dates.format(emp.createtime,'yyyy-MM-dd HH:mm:ss')}" th:align="center">2014-12-01</td>-->
+            <td th:align="center">
+                <a th:if="${emp.iscommend==0}" th:href="@{course/updatecourse.do(id=${emp.id},iscommend=1)}" th:attr="target=ajaxTodo" title="确定不推荐吗?"  rel="不推荐"  title="确定不推荐吗？" callback="dialogAjaxDone">否</a>
+                <a th:if="${emp.iscommend==1}" th:href="@{course/updatecourse.do(id=${emp.id},iscommend=0)}" th:attr="target=ajaxTodo" title="确定要推荐吗?"  rel="推荐"  title="确定要推荐吗？" callback="dialogAjaxDone">是</a>
+                <a th:if="${emp.state==1}" th:href="@{course/updatecourse.do(id=${emp.id},state=3)}" th:attr="target=ajaxTodo" title="确定要封禁吗?"  rel="封禁"  title="确定要封禁吗？" callback="dialogAjaxDone">封禁</a>
+                 <a th:if="${emp.state==0}" th:href="@{course/updatecourse.do(id=${emp.id},state=1)}" th:attr="target=ajaxTodo" title="确定审核通过吗?"  rel="审核通过"  title="确定课程审核通过吗？" callback="dialogAjaxDone">通过</a>
+                <a th:if="${emp.state==0}" th:href="@{course/updatecourse.do(id=${emp.id},state=2)}" th:attr="target=ajaxTodo" title="确定审核不通过吗?"  rel="审核未通过"  title="确定课程审核未通过吗？" callback="dialogAjaxDone">未通过</a>
+                <a th:if="${emp.state==3}" th:href="@{course/updatecourse.do(id=${emp.id},state=1)}" th:attr="target=ajaxTodo" title="确定要解禁吗?"  rel="解禁"  title="确定解禁吗？" callback="dialogAjaxDone">解禁</a>
+                <a title="详情" target="dialog"  minable=false maxable=false resizable=false mask=true   width="600" height="520" th:href="@{course/getcoursedetail.do(id=${emp.id},flag=0)}" value="详情">详情</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${page.pageSize==20}" >20</option>
+                <!-- <option value="50" th:selected="${page.pageSize==20}" >50</option>
+                 <option value="100" th:selected="${page.pageSize==20}">100</option>-->
+            </select>
+            <span th:text="'条，共'+${page.total}+'条'"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:attr="totalCount=${page.total}, numPerPage=${page.pageSize}, pageNumShown=10,currentPage=${page.pageNum}"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function dialogAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){
+                navTab.reload("course/getcourseslist.do", {}, "coursefresh");
+            }
+            $.pdialog.closeCurrent();
+        }
+    }
+    function navTabAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){ //把指定navTab页面标记为需要“重新载入”。注意navTabId不能是当前navTab页面的
+                navTab.reloadFlag(json.navTabId);
+            } else { //重新载入当前navTab页面
+                navTabPageBreak();
+            }
+            if ("closeCurrent" == json.callbackType) {
+                setTimeout(function(){navTab.closeCurrentTab();}, 100);
+            } else if ("forward" == json.callbackType) {
+                navTab.reload("course/getcourseslist.do");
+            }
+        }
+    }
+  /*  var ids="";
+    function kkk(){
+        var obj=document.getElementsByName('c1');
+        ids="";
+        for(var i=0; i<obj.length; i++){
+            if(obj[i].checked) ids+=obj[i].value+','; //如果选中，将value添加到变量s中
+        }
+        $("#ids").val(ids);
+        var url=$("#updateState").attr("href");
+        var i=url.indexOf(".do");
+        var uRI=url.substring(0,i);
+        uRI=uRI+".do?ids="+ids;
+        $("#updateState").attr("href",uRI);
+    }
+    function kk(){
+        var obj1=document.getElementById('checkboxCtrl');
+        var obj=document.getElementsByName('c1');
+        ids="";
+        if(obj1.checked){
+            for(var i=0; i<obj.length; i++){
+                ids+=obj[i].value+','; //如果选中，将value添加到变量s中
+            }
+        }
+        else
+        {
+            ids="";
+        }
+        $("#ids").val(ids);
+        var url=$("#updateState").attr("href");
+        var i=url.indexOf(".do");
+        var uRI=url.substring(0,i);
+        uRI=uRI+".do?ids="+ids;
+        $("#updateState").attr("href",uRI);
+    }*/
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="static/themes/css/login.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<form id="pagerForm" method="post" action="getnewslist.do">
+    <input type="hidden" name="pageNum" th:value="${page.pageNum}" />
+    <input type="hidden" name="numPerPage" th:value="${page.pageSize}" />
+    <input type="hidden" name="orderField" th:value="${param.orderField}" />
+    <input type="hidden" name="orderDirection" th:value="${param.orderDirection}" />
+    <input type="hidden" name="title" th:value="${title}"/>
+</form>
+<div class="pageHeader">
+    <form onsubmit="return navTabSearch(this);" th:action="@{getnewslist.do}" method="post">
+        <div class="searchBar">
+            <ul class="searchContent">
+                <li>
+                    <span>新闻标题：</span>
+                    <input type="text" name="title"  th:value="${title}"/>
+                </li>
+                <li>
+                    <input type="submit" value="查询" />
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+                <li><a class="add" href="addnews.do" target="navTab" width="800" height="435"><span>添加</span></a></li>
+                <li><a class="delete" th:href="@{deletenew.do(id='{new_id}')}" target="ajaxTodo" title="确定要删除吗?" rel="" warn="请选择一条记录" callback="dialogAjaxDone"><span>删除</span></a></li>
+                <li><a class="edit" th:href="@{getnewsdetail.do(id='{new_id}',flag=1)}" target="navTab" width="800" height="600"><span>修改</span></a></li>
+                <!--<li><a class="icon" href="demo/common/dwz-team.xls" target="dwzExport" targetType="navTab" title="要导出当前记录吗?"><span>导出EXCEL</span></a></li>-->
+        </ul>
+    </div>
+    <table class="list" width="100%" targetType="navTab" asc="asc" desc="desc" layoutH="90" >
+        <thead>
+        <tr>
+            <th width="15%" align="center">序列号</th>
+            <th width="15%" align="center">新闻标题</th>
+            <th width="20%" align="center">新闻内容</th>
+            <th width="10%" align="center">是否推荐</th>
+            <th width="10%" align="center">状态</th>
+            <th width="20%" align="center">创建时间</th>
+            <th width="10%" align="center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="emp,status:${newslist}" target="new_id" th:attr="rel=${emp.id}">
+                <td th:text="${status.index+1}" th:align="center"></td>
+                <td th:text="${emp.titleStr}+..." th:align="center"></td>
+                <td th:text="${emp.contentStr}+..." th:align="center"></td>
+                <td th:if="${emp.iscommend==0}" th:text="是" th:align="center"></td>
+                <td th:if="${emp.iscommend==1}" th:text="否" th:align="center"></td>
+                <td th:if="${emp.state==0}" th:text="正常" th:align="center"></td>
+                <td th:if="${emp.state==1}" th:text="封禁" th:align="center"></td>
+                <td th:text="${#dates.format(emp.createtime,'yyyy-MM-dd HH:mm:ss')}" th:align="center">2014-12-01</td>
+                <td th:align="center">
+                    <a th:if="${emp.iscommend==0}" th:href="@{updatenew.do(id=${emp.id},iscommend=1)}" th:attr="target=ajaxTodo" title="确定不推荐吗？" rel="不推荐" title="确定不推荐吗？" callback="dialogAjaxDone">否</a>
+                    <a th:if="${emp.iscommend==1}" th:href="@{updatenew.do(id=${emp.id},iscommend=0)}" th:attr="target=ajaxTodo" title="确定推荐吗？" rel="推荐" title="确定推荐吗？" callback="dialogAjaxDone">是</a>
+                    <a th:if="${emp.state==0}" th:href="@{updatenew.do(id=${emp.id},state=1)}"  th:attr="target=ajaxTodo" title="确定要封禁吗?"  rel="封禁"  title="确定封禁吗？" callback="dialogAjaxDone">封禁</a>
+                    <a th:if="${emp.state==1}" th:href="@{updatenew.do(id=${emp.id},state=0)}"  th:attr="target=ajaxTodo" title="确定要解禁吗?"  rel="解禁"  title="确定解禁吗？" callback="dialogAjaxDone">解禁</a>
+                    <a title="详情" target="navTab"  th:href="@{getnewsdetail.do(id=${emp.id},flag=0)}">详情</a>
+                </td>
+                <!--<td th:if="${emp.state==1}" th:text="正常" th:align="center"></td>
+                <td th:if="${emp.state==0}" th:text="封禁" th:align="center"></td>-->
+            </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${page.pageSize==20}" >20</option>
+               <!-- <option value="50" th:selected="${page.pageSize==20}" >50</option>
+                <option value="100" th:selected="${page.pageSize==20}">100</option>-->
+            </select>
+            <span th:text="'条，共'+${page.total}+'条'"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:attr="totalCount=${page.total}, numPerPage=${page.pageSize}, pageNumShown=10,currentPage=${page.pageNum}"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function dialogAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){
+                navTab.reload("getnewslist.do", {}, "newsfresh");
+            }
+            $.pdialog.closeCurrent();
+        }
+    }
+    function navTabAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){ //把指定navTab页面标记为需要“重新载入”。注意navTabId不能是当前navTab页面的
+                navTab.reloadFlag(json.navTabId);
+            } else { //重新载入当前navTab页面
+                navTabPageBreak();
+            }
+            if ("closeCurrent" == json.callbackType) {
+                setTimeout(function(){navTab.closeCurrentTab();}, 100);
+            } else if ("forward" == json.callbackType) {
+                navTab.reload("getnewslist.do");
+            }
+        }
+    }
+   /* function dialogAjaxDone1(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){
+                navTab.reload("getnewslist.do", {}, "newsfresh");
+            }
+            /!* $.pdialog.closeCurrent(); *!/
+        }
+    }*/
+</script>
+
+</body>
+</html>

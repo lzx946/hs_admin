@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.tsama.baseapiservicedao.mapper.CommentinfoMapper">
+  <resultMap id="BaseResultMap" type="top.tsama.baseapiservicedomain.model.Commentinfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cid" jdbcType="INTEGER" property="cid" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="iscommend" jdbcType="INTEGER" property="iscommend"></result>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.tsama.baseapiservicedomain.model.Commentinfo">
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into comment (id, cid, uid, 
+      content, state, createtime
+      )
+    values (#{id,jdbcType=INTEGER}, #{cid,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="top.tsama.baseapiservicedomain.model.Commentinfo">
+    update comment
+    <trim prefix="set" suffixOverrides=",">
+      <if test="state!=null">  state = #{state,jdbcType=INTEGER},</if>
+      <if test="iscommend!=null">iscommend=#{iscommend,jdbcType=INTEGER},</if>
+    </trim>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, cid, uid, content, state, createtime,iscommend
+    from comment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" parameterType="top.tsama.baseapiservicedomain.model.CommentVoinfo"  resultType="top.tsama.baseapiservicedomain.model.CommentVoinfo">
+    select a.id, cid, uid, a.content, a.state, a.createtime,account ,realname,b.name as coursename,d.codeflagname,b.room,a.iscommend
+    from comment a LEFT JOIN course b ON a.cid=b.id LEFT JOIN studentsinfo c ON a.uid=c.id LEFT JOIN sys_dictionary d ON b.classroom=d.id
+    where 1=1
+    <if test="id!=null">
+      and a.id=#{id}
+    </if>
+    <if test="account!=null">
+      and account LIKE CONCAT('%', #{account}, '%')
+    </if>
+    <if test="realname!=null">
+      and realname LIKE CONCAT('%', #{realname}, '%')
+    </if>
+    <if test="coursename!=null">
+      and b.name LIKE CONCAT('%', #{coursename}, '%')
+    </if>
+    ORDER BY a.createtime DESC
+  </select>
+</mapper>

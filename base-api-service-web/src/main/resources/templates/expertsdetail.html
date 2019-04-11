@@ -1,0 +1,174 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>专家详情</title>
+    <style type="text/css">
+        .pageFormContent p {
+            float: left;
+            display: block;
+            width:auto;
+            height: 21px;
+            margin: 0;
+            padding: 5px 0;
+            position: relative;
+        }
+    </style>
+    <style>
+        #userDetail input{
+           /* color:#A9A9A9;*/
+        }
+    </style>
+</head>
+<body>
+<div class="pageContent">
+    <form method="post" action="experts/updateexpert.do" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+        <input type="hidden" th:value="${id}" name="id" id="id">
+        <div class="pageFormContent" layoutH="50" id="userDetail"
+        th:each="emp,status:${expertlist}"
+        <p>
+            <label>专家姓名：</label>
+            <input th:if="${flag==0}" style="color:#A9A9A9;" name="realname" class="digits" type="text" size="30" th:value="${emp.realname}" readonly="readonly"/>
+            <input name="realname"  type="text" size="30" th:value="${emp.realname}" th:if="${flag==1}" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <img id="smallImg" alt="" th:src="@{${emp.url}}" width="128" height="178" />
+        </p>
+        <p>
+            <label>专家英文名：</label>
+            <input th:if="${flag==0}" style="color:#A9A9A9;" name="enname" type="text" size="30"  readonly="readonly" th:value="${emp.enname}" />
+            <input name="enname" id="enname" class="required" type="text" size="30" th:value="${emp.enname}" th:if="${flag==1}" />
+        </p>
+        <p>
+            <label>专家账号：</label>
+            <input th:if="${flag==0}" style="color:#A9A9A9;" name="account" type="text" size="30"  readonly="readonly" th:value="${emp.account}" />
+            <input name="account" id="account" class="required" type="text" size="30" th:value="${emp.account}" th:if="${flag==1}" onblur="verifyAccount()" />
+        </p>
+        <p>
+            <label>电话号码：</label>
+            <input name="phone" style="color:#A9A9A9;" type="text" class="phone" size="30"  readonly="readonly" th:if="${flag==0}" th:value="${emp.phone}" />
+            <input th:if="${flag==1}" name="phone" class="phone required" type="text" size="30"  th:value="${emp.phone}" />
+        </p>
+        <p>
+            <label>邮箱：</label>
+            <input th:if="${flag==0}" style="color:#A9A9A9;" class="email" name="email" type="text" size="30"  readonly="readonly" th:value="${emp.email}" />
+            <input th:if="${flag==1}" id="email" class="email required" name="email" type="text" size="30"  th:value="${emp.email}" onblur="verifyEmail()"/>
+        </p>
+        <p>
+            <label>公开邮箱：</label>
+            <input th:if="${flag==0}" style="color:#A9A9A9;" class="openemail" name="openemail" type="text" size="30"  readonly="readonly" th:value="${emp.openemail}" />
+            <input th:if="${flag==1}" id="openemail" class="email required" name="openemail" type="text" size="30"  th:value="${emp.openemail}"/>
+        </p>
+         <p>
+            <label>职称：</label>
+            <input th:if="${flag==0}" style="color:#A9A9A9;" name="academic" type="text" size="30"  readonly="readonly" th:value="${emp.academic}" />
+             <input th:if="${flag==1}" name="academic" type="text" size="30" th:value="${emp.academic}" />
+        </p>
+        <dl class="nowrap">
+            <dt>其他职务：</dt>
+            <dd style="dispaly:inline-block;width:auto">
+                <textarea th:if="${flag==0}" name="otheracademic" type="text" cols="65" rows="10"  readonly="readonly"  th:placeholder="${emp.otheracademic}"></textarea>
+                <textarea th:if="${flag==1}" name="otheracademic" type="text" cols="65" rows="10" id="otheracademic" ></textarea>
+            </dd>
+        </dl>
+        <p>
+            <label>单位：</label>
+            <input th:if="${flag==0}" style="color:#A9A9A9;" name="employer" type="text" size="30"  readonly="readonly" th:value="${emp.employer}" />
+            <input th:if="${flag==1}" name="employer" type="text" size="30"  th:value="${emp.employer}" />
+        </p>
+        <p>
+            <label>格言：</label>
+            <input th:if="${flag==0}" style="color:#A9A9A9;" name="motto" type="text" size="30"  readonly="readonly" th:value="${emp.motto}" />
+            <input th:if="${flag==1}" name="motto" type="text" size="30"  th:value="${emp.motto}" />
+        </p>
+        <dl  class="nowrap">
+            <dt>个人简介简短版：</dt>
+            <dd style="dispaly:inline-block;width:auto">
+                <textarea th:if="${flag==0}" name="summarys" type="text" cols="65" rows="4"  readonly="readonly"  th:placeholder="${emp.summarys}"></textarea>
+                <textarea th:if="${flag==1}" name="summarys" type="text" cols="65" rows="4" id="summarys" ></textarea>
+            </dd>
+        </dl>
+        <dl class="nowrap">
+            <dt>个人简介：</dt>
+            <dd style="dispaly:inline-block;width:auto">
+                <textarea th:if="${flag==0}" name="summary" type="text" cols="65" rows="10"  readonly="readonly"  th:placeholder="${emp.summary}"></textarea>
+                <textarea th:if="${flag==1}" name="summary" type="text" cols="65" rows="10" id="summary" ></textarea>
+            </dd>
+        </dl>
+        <p th:if="${flag==0}">
+            <label>是否可见：</label>
+            <input th:if="${emp.isvisible==1}" style="color:#A9A9A9;" th:value="不可见" size="30" type="text" readonly="readonly">
+            <input th:if="${emp.isvisible==0}" style="color:#A9A9A9;" th:value="可见" size="30" type="text"   readonly="readonly">
+        </p>
+        <p th:if="${flag==0}">
+            <label>是否推荐：</label>
+            <input th:if="${emp.iscommend==1}" style="color:#A9A9A9;" th:value="不推荐" size="30" type="text" readonly="readonly">
+            <input th:if="${emp.iscommend==0}" style="color:#A9A9A9;" th:value="推荐" size="30" type="text"   readonly="readonly">
+        </p>
+       <!-- <p th:if="${flag==1}">
+            <label>是否可见：</label>
+            <input th:if="${emp.isvisible==1}" th:value="不可见" size="30" type="text" readonly="readonly">
+            <input th:if="${emp.isvisible==0}" th:value="可见" size="30" type="text"   readonly="readonly">
+        </p>-->
+        <p>
+            <label>创建时间：</label>
+            <input name="time" type="text" size="30" style="color:#A9A9A9;" readonly="readonly" th:value="${#dates.format(emp.createtime,'yyyy-MM-dd HH:mm:ss')}">
+            <input type="hidden" th:value="${emp.summary}" id="summaryinput">
+            <input type="hidden" th:value="${emp.summarys}" id="summaryinputs">
+            <input type="hidden" th:value="${emp.otheracademic}" id="otheracademicinput">
+        </p>
+    >
+    <div class="formBar">
+        <ul>
+            <li>
+                <button th:if="${flag==1}" type="submit" id="btn" name="btn">保存</button>
+            </li>
+            <li>
+                <div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div>
+            </li>
+        </ul>
+    </div>
+    </form>
+</div>
+<script  type="text/javascript">
+    $("#summary").val($("#summaryinput").val());
+    $("#summarys").val($("#summaryinputs").val());
+    $("#otheracademic").val($("#otheracademicinput").val());
+    function verifyAccount() {
+        $("#btn").attr("disabled", false);
+        $.ajax(
+            {
+                type:'POST',
+                url:'experts/verifyAccount.do',
+                data:{account:$("#account").val(),id:$("#id").val()},
+                dataType:"json",
+                success:function (data) {
+                    if(data.account!=null&&!data.account==""){
+                        alert("账号已存在，请重新输入");
+                        $("#btn").attr("disabled", true);
+                    }
+                }
+            }
+        );
+    }
+    function verifyEmail() {
+        $("#btn").attr("disabled", false);
+        $.ajax(
+            {
+                type:'POST',
+                url:'experts/verifyAccount.do',
+                data:{email:$("#email").val(),id:$("#id").val()},
+                dataType:"json",
+                success:function (data) {
+                    if(data.email!=null&&!data.email==""){
+                        alert("邮箱已存在，请重新输入");
+                        $("#btn").attr("disabled", true);
+                    }
+                    else{
+
+                    }
+                }
+            }
+        );
+    }
+</script>
+</body>
+</html>

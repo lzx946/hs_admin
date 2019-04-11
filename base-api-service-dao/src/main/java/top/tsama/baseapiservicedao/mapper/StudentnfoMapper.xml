@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.tsama.baseapiservicedao.mapper.StudentnfoMapper">
+  <resultMap id="BaseResultMap" type="top.tsama.baseapiservicedomain.model.Studentnfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="photoid" jdbcType="INTEGER" property="photoid" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="companyurl" jdbcType="VARCHAR" property="companyurl" />
+    <result column="company" jdbcType="LONGVARCHAR" property="company" />
+    <result column="summary" jdbcType="LONGVARCHAR" property="summary" />
+    <result column="enname" jdbcType="VARCHAR" property="enname"></result>
+    <result column="otherposition" jdbcType="VARCHAR" property="otherposition"></result>
+    <result column="motto" jdbcType="VARCHAR" property="motto"></result>
+    <result column="studentid" jdbcType="VARCHAR" property="studentid"></result>
+    <result column="qrcode" jdbcType="INTEGER" property="qrcode"></result>
+    <result column="wechat" jdbcType="VARCHAR" property="wechat"></result>
+    <result column="area" jdbcType="INTEGER" property="area"></result>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from studentsinfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.tsama.baseapiservicedomain.model.Studentnfo">
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into studentsinfo (id, email, password, 
+      photoid, phone, account, 
+      realname, position, state, 
+      createtime, companyurl, company, 
+      summary,enname,otherposition,motto,studentid,qrcode,wechat,area)
+    values (#{id,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{photoid,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, 
+      #{realname,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{companyurl,jdbcType=VARCHAR}, #{company,jdbcType=LONGVARCHAR}, 
+      #{summary,jdbcType=LONGVARCHAR},#{enname,jdbcType=VARCHAR},#{otherposition,jdbcType=VARCHAR},
+      #{motto,jdbcType=VARCHAR},#{studentid,jdbcType=VARCHAR},#{qrcode,jdbcType=INTEGER},
+      #{wechat,jdbcType=VARCHAR}, #{area,jdbcType=INTEGER}
+    )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="top.tsama.baseapiservicedomain.model.Studentnfo">
+    update studentsinfo
+    <trim prefix="set" suffixOverrides=",">
+      <if test="email!=null">  email= #{email,jdbcType=VARCHAR},</if>
+      <if test="password!=null">password = #{password,jdbcType=VARCHAR},</if>
+      <if test="photoid!=null">  photoid = #{photoid,jdbcType=INTEGER},</if>
+      <if test="phone!=null"> phone = #{phone,jdbcType=VARCHAR},</if>
+      <if test="account!=null"> account = #{account,jdbcType=VARCHAR},</if>
+      <if test="realname!=null"> realname = #{realname,jdbcType=VARCHAR},</if>
+      <if test="position!=null">position = #{position,jdbcType=VARCHAR},</if>
+      <if test="state!=null">state = #{state,jdbcType=INTEGER},</if>
+      <if test="createtime!=null"> createtime = #{createtime,jdbcType=TIMESTAMP},</if>
+      <if test="companyurl!=null">companyurl = #{companyurl,jdbcType=VARCHAR},</if>
+      <if test="company!=null">company = #{company,jdbcType=LONGVARCHAR},</if>
+      <if test="summary!=null">summary = #{summary,jdbcType=LONGVARCHAR},</if>
+      <if test="enname!=null">enname = #{enname,jdbcType=VARCHAR},</if>
+      <if test="otherposition!=null">otherposition = #{otherposition,jdbcType=VARCHAR},</if>
+      <if test="motto!=null">motto = #{motto,jdbcType=VARCHAR},</if>
+      <if test="studentid!=null">studentid = #{studentid,jdbcType=VARCHAR},</if>
+      <if test="wechat!=null">wechat = #{wechat,jdbcType=VARCHAR},</if>
+      <if test="area!=null">area = #{area,jdbcType=INTEGER},</if>
+    </trim>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="top.tsama.baseapiservicedomain.model.Student_Fileinfo" resultType="top.tsama.baseapiservicedomain.model.Student_Fileinfo">
+    select a.id, email, password, photoid, phone, account, realname, position, state, createtime,
+    companyurl, company, summary,url,enname,otherposition,motto,studentid,qrcode,wechat,codeflagname,a.area
+    from studentsinfo a LEFT JOIN sys_file b ON a.photoid=b.id LEFT JOIN sys_dictionary c ON a.area=c.id
+    where 1=1
+    <if test="id!=null">
+      and a.id = #{id,jdbcType=INTEGER}
+    </if>
+    <if test="realname!=null">
+      and realname LIKE CONCAT('%', #{realname}, '%')
+    </if>
+    <if test="account!=null">
+      and account=#{account}
+    </if>
+    <if test="email!=null">
+      and email=#{email}
+    </if>
+    <if test="phone!=null">
+      and phone=#{phone}
+    </if>
+    ORDER BY a.createtime DESC
+  </select>
+  <select id="selectAll" resultType="top.tsama.baseapiservicedomain.model.Student_Fileinfo">
+    select a.id, email, password, photoid, phone, account, realname, position, state, createtime,
+    companyurl, company, summary,url,enname,otherposition,motto,studentid,qrcode,wechat,codeflagname,a.area
+    from studentsinfo a LEFT JOIN sys_file b ON a.photoid=b.id LEFT JOIN sys_dictionary c ON a.area=c.id
+    ORDER BY a.createtime DESC
+  </select>
+  <update id="updateBatch"  parameterType="java.util.List">
+      update studentsinfo
+      <trim prefix="set" suffixOverrides=",">
+        <trim prefix="state =case" suffix="end,">
+          <foreach collection="list" item="i" index="index">
+            <if test="i.state!=null">
+              when id=#{i.id} then #{i.state}
+            </if>
+          </foreach>
+        </trim>
+      </trim>
+      where
+      <foreach collection="list" separator="or" item="i" index="index" >
+        id=#{i.id}
+      </foreach>
+  </update>
+</mapper>

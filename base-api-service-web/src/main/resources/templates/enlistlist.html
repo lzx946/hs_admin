@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>报名列表</title>
+</head>
+<body>
+<form id="pagerForm" method="post" action="enlist/getenlistslist.do">
+    <input type="hidden" name="pageNum" th:value="${page.pageNum}" />
+    <input type="hidden" name="numPerPage" th:value="${page.pageSize}" />
+    <input type="hidden" name="orderField" th:value="${param.orderField}" />
+    <input type="hidden" name="orderDirection" th:value="${param.orderDirection}" />
+    <input type="hidden" name="account" th:value="${account}"/>
+    <input type="hidden" name="name" th:value="${name}"/>
+</form>
+<div class="pageHeader">
+    <form onsubmit="return navTabSearch(this);" action="enlist/getenlistslist.do" method="post">
+        <div class="searchBar">
+            <ul class="searchContent">
+                <li>
+                    <span>学员账号：</span>
+                    <input type="text" name="account" th:value="${account}"/>
+                </li>
+                <li>
+                    <span>课程名：</span>
+                    <input type="text" name="name"  th:value="${name}"/>
+                </li>
+                <li>
+                    <input type="submit" value="查询" />
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="add" href="enlist/addenlistshow.do" target="navTab"  width="1000" height="450"><span>添加</span></a></li>
+            <li><a class="delete" th:href="@{enlist/deleteenlist.do(id='{new_id}')}" target="ajaxTodo" title="确定要删除吗?" rel="" warn="请选择一条记录" callback="dialogAjaxDone"><span>删除</span></a></li>
+            <li><a class="icon" th:href="@{enlist/export.do(name=${name})}" target="ajaxTodo" title="要导出当前记录吗?路径为D:DWZ_enlistinfo.xls"><span>导出EXCEL</span></a></li>
+        </ul>
+    </div>
+    <table class="list" width="100%" targetType="navTab" asc="asc" desc="desc" layoutH="90" >
+        <thead>
+        <tr>
+            <th width="5%" align="center">序列号</th>
+            <th width="10%" align="center">学员姓名</th>
+            <th width="10%" align="center">学员账号</th>
+            <th width="15%" align="center">课程名</th>
+            <th width="20%" align="center">上课地点</th>
+            <th width="15%" align="center">班次</th>
+            <th width="10%" align="center">结果</th>
+            <th width="15%" align="center">创建时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp,status:${enlistslist}" target="new_id" th:attr="rel=${emp.id}">
+            <td th:text="${status.index+1}" th:align="center"></td>
+            <td th:text="${emp.realname}" th:align="center"></td>
+            <td th:text="${emp.account}" th:align="center"></td>
+            <td th:text="${emp.coursename}" th:align="center"></td>
+            <td th:text="${emp.room}" th:align="center"></td>
+            <td th:text="${emp.codeflagname}" th:align="center"></td>
+            <td th:if="${emp.result==0}" th:text="成功" th:align="center"></td>
+            <td th:if="${emp.result==1}" th:text="失败" th:align="center"></td>
+            <td th:text="${#dates.format(emp.createtime,'yyyy-MM-dd HH:mm:ss')}" th:align="center">2014-12-01</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${page.pageSize==20}" >20</option>
+                <!-- <option value="50" th:selected="${page.pageSize==20}" >50</option>
+                 <option value="100" th:selected="${page.pageSize==20}">100</option>-->
+            </select>
+            <span th:text="'条，共'+${page.total}+'条'"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:attr="totalCount=${page.total}, numPerPage=${page.pageSize}, pageNumShown=10,currentPage=${page.pageNum}"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function dialogAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){
+                navTab.reload("enlist/getenlistslist.do", {}, "enlistsfresh");
+            }
+            $.pdialog.closeCurrent();
+        }
+    }
+    function navTabAjaxDone(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if (json.navTabId){ //把指定navTab页面标记为需要“重新载入”。注意navTabId不能是当前navTab页面的
+                navTab.reloadFlag(json.navTabId);
+            } else { //重新载入当前navTab页面
+                navTabPageBreak();
+            }
+            if ("closeCurrent" == json.callbackType) {
+                setTimeout(function(){navTab.closeCurrentTab();}, 100);
+            } else if ("forward" == json.callbackType) {
+                navTab.reload("enlist/getenlistslist.do");
+            }
+        }
+    }
+</script>
+</body>
+</html>
